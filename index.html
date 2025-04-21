@@ -28,11 +28,16 @@
   var map = L.map('map').setView([14.0583, 108.2772], 6);
 
   // Thêm lớp nền từ OpenStreetMap
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap contributors'
-  }).addTo(map);
+  // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  //   maxZoom: 19,
+  //   attribution: '© OpenStreetMap contributors'
+  // }).addTo(map);
 
+  // Thêm lớp nền ảnh vệ tinh miễn phí từ Esri
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+  attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+}).addTo(map);
+  
   // Thêm 1 marker (ví dụ tại Hà Nội)
   var marker = L.marker([20.9889,105.7965]).addTo(map);
   marker.bindPopup("<b>HANU</b><br>MY UNIVERSITY").openPopup();
