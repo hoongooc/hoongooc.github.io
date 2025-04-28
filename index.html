@@ -1,83 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WebGIS Cơ Bản</title>
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <!-- Leaflet Control Geocoder CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGIS Q2 Midterm 2 of Pham Hong Ngoc - 2106080094</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
 
-  <style>
-    body, html { margin: 0; padding: 0; height: 100%; }
-    #map { height: 90vh; width: 100%; }
-    header {
-      text-align: center;
-      padding: 10px;
-      background-color: #4CAF50;
-      color: white;
-      font-size: 24px;
-      font-weight: bold;
-    }
-  </style>
+        #mapid {
+            width: 100%;
+            height: 600px;
+        }
+
+        h1 {
+            color: #333;
+            margin-top: 20px;
+        }
+
+        /* Legend styles */
+        .info.legend {
+            line-height: 18px;
+            color: #555;
+        }
+
+        .legend i {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+            display: inline-block;
+        }
+
+        .legend {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-legend/dist/leaflet-control-legend.js"></script>
 </head>
-
 <body>
-  <header>WebGIS cơ bản với Leaflet.js</header>
-  <div id="map"></div>
+    <h1>WebGIS Q2 Midterm 2 of Pham Hong Ngoc - 2106080094. Study area: Chau Thanh, Hau Giang</h1>
+    <div id="mapid"></div>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <!-- Leaflet Control Geocoder JS -->
-  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script>
+        // Khởi tạo bản đồ
+        var map = L.map('mapid').setView([9.702, 105.671], 11);  // Tọa độ cho Châu Thành, Hậu Giang
 
-  <script>
-    // Khởi tạo các lớp nền
-    const esri = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'Tiles &copy; Esri &mdash; Sources: Esri, USGS, NOAA'
-    });
+        // Thêm lớp nền OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
-    const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    });
+        // Thêm lớp GeoJSON cho các xã ở Châu Thành, Hậu Giang với mật độ dân số
+        var geojsonLayer = L.geoJSON(null, {
+            onEachFeature: function (feature, layer) {
+                // Hiển thị Popup cho xã và mật độ dân số
+                layer.bindPopup("<strong>Commune: </strong>" + feature.properties.name + "<br><strong>Population Density: </strong>" + feature.properties.population_density);
+            }
+        }).addTo(map);
 
-    // Khởi tạo bản đồ tại Hà Nội với lớp nền Esri mặc định
-    const map = L.map('map', {
-      center: [21.0285, 105.8542],
-      zoom: 13,
-      layers: [esri] // mặc định là Esri
-    });
+        // Dữ liệu GeoJSON cho các xã (Thay thế bằng tệp GeoJSON thực tế của bạn)
+        var geojsonData = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "Commune 1",
+                        "population_density": 1200
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [105.66, 9.7],
+                                [105.67, 9.7],
+                                [105.67, 9.71],
+                                [105.66, 9.71],
+                                [105.66, 9.7]
+                            ]
+                        ]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "Commune 2",
+                        "population_density": 800
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [105.68, 9.7],
+                                [105.69, 9.7],
+                                [105.69, 9.71],
+                                [105.68, 9.71],
+                                [105.68, 9.7]
+                            ]
+                        ]
+                    }
+                }
+            ]
+        };
 
-    // Thêm tùy chọn lớp nền
-    const baseMaps = {
-      "Ảnh vệ tinh Esri": esri,
-      "Bản đồ OSM": osm
-    };
-    L.control.layers(baseMaps).addTo(map);
+        geojsonLayer.addData(geojsonData);
+        styleCommuneLayer();
 
-    // Thêm một điểm GeoJSON vào bản đồ
-    const geojsonFeature = {
-      "type": "Feature",
-      "properties": {
-        "name": "Trung tâm Hà Nội"
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [105.8542, 21.0285]
-      }
-    };
+        // Hàm áp dụng biểu đồ phân lớp cho mật độ dân số
+        function styleCommuneLayer() {
+            geojsonLayer.setStyle(function (feature) {
+                var density = feature.properties.population_density;
+                return {
+                    fillColor: getDensityColor(density),
+                    weight: 1,
+                    opacity: 1,
+                    color: 'white',
+                    dashArray: '3',
+                    fillOpacity: 0.7
+                };
+            });
+        }
 
-    L.geoJSON(geojsonFeature, {
-      onEachFeature: function (feature, layer) {
-        layer.bindPopup(feature.properties.name);
-      }
-    }).addTo(map);
+        // Hàm lấy màu sắc dựa trên mật độ dân số
+        function getDensityColor(density) {
+            return density > 1000 ? '#800026' :
+                   density > 500  ? '#BD0026' :
+                   density > 200  ? '#E31A1C' :
+                   density > 100  ? '#FC4E2A' :
+                   density > 50   ? '#FD8D3C' :
+                   density > 20   ? '#FEB24C' :
+                   density > 10   ? '#FED976' :
+                                    '#FFEDA0';
+        }
 
-    // Thêm chức năng tìm kiếm địa điểm
-    L.Control.geocoder({
-      defaultMarkGeocode: true
-    }).addTo(map);
-  </script>
+        // Thêm nhãn cho các xã
+        var labelLayer = L.geoJSON(null, {
+            onEachFeature: function (feature, layer) {
+                layer.bindTooltip(feature.properties.name, { permanent: true, direction: 'center' }).openTooltip();
+            }
+        }).addTo(map);
+
+        // Lấy và thêm nhãn cho các xã
+        labelLayer.addData(geojsonData);
+
+        // Thêm chú giải (legend) cho bản đồ
+        var legend = L.control.legend({
+            position: 'topright'
+        });
+        legend.addTo(map);
+
+        // Định nghĩa nội dung cho chú giải
+        legend.onAdd = function() {
+            var div = L.DomUtil.create('div', 'info legend');
+            var grades = [0, 10, 20, 50, 100, 200, 500, 1000];
+            var labels = ['<strong>Population Density</strong>'];
+
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML += 
+                    '<i style="background:' + getDensityColor(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] : '+') + '<br>';
+            }
+
+            return div;
+        };
+
+    </script>
 </body>
 </html>
