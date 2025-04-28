@@ -33,13 +33,28 @@
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
   <script>
-    // Khởi tạo bản đồ tại Hà Nội
-    const map = L.map('map').setView([21.0285, 105.8542], 13);
+    // Khởi tạo các lớp nền
+    const esri = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri &mdash; Sources: Esri, USGS, NOAA'
+    });
 
-    // Thêm lớp nền ảnh vệ tinh miễn phí từ Esri
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-    }).addTo(map);
+    const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    });
+
+    // Khởi tạo bản đồ tại Hà Nội với lớp nền Esri mặc định
+    const map = L.map('map', {
+      center: [21.0285, 105.8542],
+      zoom: 13,
+      layers: [esri] // mặc định là Esri
+    });
+
+    // Thêm tùy chọn lớp nền
+    const baseMaps = {
+      "Ảnh vệ tinh Esri": esri,
+      "Bản đồ OSM": osm
+    };
+    L.control.layers(baseMaps).addTo(map);
 
     // Thêm một điểm GeoJSON vào bản đồ
     const geojsonFeature = {
