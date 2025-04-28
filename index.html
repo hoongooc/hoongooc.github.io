@@ -1,47 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>WebGIS cơ bản với Leaflet</title>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Leaflet CSS -->
+  <title>WebGIS Cơ Bản</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
   <style>
-    #map {
-      height: 100vh;
-      width: 100%;
-    }
+    body, html { margin: 0; padding: 0; height: 100%; }
+    #map { height: 100vh; width: 100%; }
   </style>
 </head>
 <body>
+  <div id="map"></div>
 
-<h3 style="text-align:center;">WebGIS cơ bản với Leaflet.js do Ngoc tao</h3>
-<div id="map"></div>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <script>
+    // Khởi tạo bản đồ tại Hà Nội
+    const map = L.map('map').setView([21.0285, 105.8542], 13);
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    // Thêm lớp nền ảnh vệ tinh miễn phí từ Esri
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+    }).addTo(map);
 
-<script>
-  // Khởi tạo bản đồ và đặt vị trí trung tâm (tọa độ Việt Nam)
-  var map = L.map('map').setView([14.0583, 108.2772], 6);
+    // Thêm một điểm GeoJSON vào bản đồ
+    const geojsonFeature = {
+      "type": "Feature",
+      "properties": {
+        "name": "Trung tâm Hà Nội"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [105.8542, 21.0285]
+      }
+    };
 
-  // Thêm lớp nền từ OpenStreetMap
-  // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  //   maxZoom: 19,
-  //   attribution: '© OpenStreetMap contributors'
-  // }).addTo(map);
+    L.geoJSON(geojsonFeature, {
+      onEachFeature: function (feature, layer) {
+        layer.bindPopup(feature.properties.name);
+      }
+    }).addTo(map);
 
-  // Thêm lớp nền ảnh vệ tinh miễn phí từ Esri
-L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-  attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-}).addTo(map);
-  
-  // Thêm 1 marker (ví dụ tại Hà Nội)
-  var marker = L.marker([20.9889,105.7965]).addTo(map);
-  marker.bindPopup("<b>HANU</b><br>MY UNIVERSITY").openPopup();
-</script>
-
+    // Thêm chức năng tìm kiếm vị trí
+    L.Control.geocoder({
+      defaultMarkGeocode: true
+    }).addTo(map);
+  </script>
 </body>
 </html>
