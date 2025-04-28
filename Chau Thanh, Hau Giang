@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGIS Q2 Midterm 2 of Pham Hong Ngoc - 2106080094</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        #mapid {
+            width: 100%;
+            height: 600px;
+        }
+
+        h1 {
+            color: #333;
+            margin-top: 20px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+    <h1>WebGIS Q2 Midterm 2 of Pham Hong Ngoc - 2106080094. Study area: Chau Thanh, Hau Giang</h1>
+    <div id="mapid"></div>
+
+    <script>
+        // Khởi tạo bản đồ
+        var map = L.map('mapid').setView([9.702, 105.671], 11);  // Tọa độ cho Châu Thành, Hậu Giang
+
+        // Thêm lớp nền OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Thêm lớp GeoJSON cho các xã ở Châu Thành, Hậu Giang
+        var geojsonLayer = L.geoJSON(null, {
+            onEachFeature: function (feature, layer) {
+                // Hiển thị Popup cho xã
+                layer.bindPopup("<strong>Commune: </strong>" + feature.properties.name);
+            }
+        }).addTo(map);
+
+        // Dữ liệu GeoJSON cho các xã (Thay thế bằng tệp GeoJSON thực tế của bạn)
+        var geojsonData = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "Commune 1"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [105.66, 9.7],
+                                [105.67, 9.7],
+                                [105.67, 9.71],
+                                [105.66, 9.71],
+                                [105.66, 9.7]
+                            ]
+                        ]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "name": "Commune 2"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [105.68, 9.7],
+                                [105.69, 9.7],
+                                [105.69, 9.71],
+                                [105.68, 9.71],
+                                [105.68, 9.7]
+                            ]
+                        ]
+                    }
+                }
+            ]
+        };
+
+        geojsonLayer.addData(geojsonData);
+
+        // Thêm nhãn cho các xã
+        var labelLayer = L.geoJSON(null, {
+            onEachFeature: function (feature, layer) {
+                layer.bindTooltip(feature.properties.name, { permanent: true, direction: 'center' }).openTooltip();
+            }
+        }).addTo(map);
+
+        // Lấy và thêm nhãn cho các xã
+        labelLayer.addData(geojsonData);
+    </script>
+</body>
+</html>
