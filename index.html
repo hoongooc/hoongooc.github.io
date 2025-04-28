@@ -4,18 +4,34 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WebGIS Cơ Bản</title>
+  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <!-- Leaflet Control Geocoder CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
   <style>
     body, html { margin: 0; padding: 0; height: 100%; }
-    #map { height: 100vh; width: 100%; }
+    #map { height: 90vh; width: 100%; }
+    header {
+      text-align: center;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+    }
   </style>
 </head>
+
 <body>
+  <header>WebGIS cơ bản với Leaflet.js</header>
   <div id="map"></div>
 
+  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <!-- Leaflet Control Geocoder JS -->
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
   <script>
     // Khởi tạo bản đồ tại Hà Nội
     const map = L.map('map').setView([21.0285, 105.8542], 13);
@@ -43,7 +59,7 @@
       }
     }).addTo(map);
 
-    // Thêm chức năng tìm kiếm vị trí
+    // Thêm chức năng tìm kiếm địa điểm
     L.Control.geocoder({
       defaultMarkGeocode: true
     }).addTo(map);
